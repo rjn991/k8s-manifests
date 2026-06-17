@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server-ingress
+  namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: argocd-redirect-http-to-https@kubernetescrd
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - argocd.ranjan.host
+    secretName: wildcard-ranjan-host
+  rules:
+  - host: argocd.ranjan.host
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              name: http
