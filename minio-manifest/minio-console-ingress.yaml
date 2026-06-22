@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-console-ingress
+  namespace: minio
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: minio-redirect-http-to-https@kubernetescrd
+spec:
+  ingressClassName: traefik
+
+  tls:
+  - hosts:
+    - minio.ranjan.host
+    secretName: wildcard-ranjan-host
+
+  rules:
+  - host: minio.ranjan.host
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio-console
+            port:
+              number: 9001
